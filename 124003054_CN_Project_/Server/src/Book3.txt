@@ -1,0 +1,10 @@
+This is Book 3 from Server
+public class Client 
+{
+
+    public static void main(String[] args) 
+    {
+        chat_client client=new chat_client("192.168.72.214");
+        client.startRunning();
+    }
+}

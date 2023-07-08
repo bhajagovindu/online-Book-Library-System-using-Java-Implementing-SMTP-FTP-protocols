@@ -1,0 +1,53 @@
+This is Book 7 from Server
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class UDPFileReceiver
+{
+	String receive(int port)
+	{
+		String str="";
+		try
+		{
+			byte[] rdata=new byte[1024];
+                      	DatagramSocket s=new DatagramSocket(port);
+                     	DatagramPacket rpack=new DatagramPacket(rdata,rdata.length); //creating container to receive the data
+                               
+                        System.out.println("Waiting for file name:");
+                        s.receive(rpack);
+                               
+                        String fname=new String(rpack.getData());	//converting bytes to string
+		
+			System.out.println("File name :"+fname.trim()+":");
+			FileWriter fr=new FileWriter("a_"+fname.trim());
+			String txt="";
+			do
+			{
+			byte[] rdata1=new byte[1024];                           		 
+                       	DatagramPacket rpack1=new DatagramPacket(rdata1,rdata1.length);
+                               
+                        s.receive(rpack1);
+			rdata1=rpack1.getData();   // received packet saved into byte array
+                        txt=new String(rdata1);                             
+                        System.out.println(txt.trim());
+			fr.write(txt.trim());  
+			}while(!txt.trim().equals("done..."));  //eof
+			
+			fr.close();
+			s.close();			
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception:"+ e);
+		}
+		return str;
+	}
+
+	public static void main(String arg[])
+	{
+		UDPFileReceiver ob= new UDPFileReceiver();
+		ob.receive(8081);
+			
+	}
+}

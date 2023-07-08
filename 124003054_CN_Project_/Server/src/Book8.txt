@@ -1,0 +1,53 @@
+This is Book 8 from Server
+import java.net.*;
+import java.io.*;
+import java.util.*;
+public class UDPFileSender
+{
+void sender(String IP,int pn,String msg)
+{
+try
+{
+byte[] sdata=new byte[1024];  // creating byte array
+InetAddress ipa=InetAddress.getByName(IP); // converting ip address into inetaddress obj
+
+sdata=msg.getBytes(); //converting string to bytes
+DatagramSocket s=new DatagramSocket();
+                DatagramPacket spack=new DatagramPacket(sdata,sdata.length,ipa,pn);
+                s.send(spack); //sending bytes
+
+System.out.println("file name...sent");
+
+Scanner scnr = new Scanner(new File(msg));
+byte[] buffer=new byte[1024];  
+
+while(scnr.hasNextLine())
+{
+            String line = scnr.nextLine();
+System.out.println(line);
+char[] ch = new char[line.length()];
+StringBuilder sb = new StringBuilder();
+ 
+        for (int i = 0; i < line.length(); i++) {
+            ch[i] = line.charAt(i);
+            ch[i]+=3%256;
+sb.append(ch[i]);
+        }
+
+line=sb.toString();
+ 
+buffer=line.getBytes();
+DatagramPacket spack1=new DatagramPacket(buffer,buffer.length,ipa,pn);
+s.send(spack1);
+}
+s.close();
+}
+catch(Exception e){System.out.println(e+ " ");}
+}
+
+public static void main(String args[])
+{
+UDPFileSender ob = new UDPFileSender();
+ob.sender("localhost",8081,"sample.txt");
+}
+}
